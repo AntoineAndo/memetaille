@@ -7,7 +7,6 @@ var cors = require('cors');
 require('dotenv').config()
 
 //var authenticationRouter = require('./routes/authentication');
-var usersRouter = require('./routes/users');
 
 const passport = require('passport');
 const bodyParser = require('body-parser');
@@ -43,6 +42,8 @@ const { MONGODB_URI, MONGODB_DB } = process.env
 mongoose
 	.connect(MONGODB_URI, { useNewUrlParser: true })
 	.then(() => {
+		console.log("Connection successful")
+		var usersRouter = require('./routes/users');
 		app.use('/users', usersRouter);
 	})
 
