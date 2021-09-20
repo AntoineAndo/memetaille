@@ -4,8 +4,10 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 
-var indexRouter = require('./routes/index');
-//var usersRouter = require('./routes/users');
+require('dotenv').config()
+
+//var authenticationRouter = require('./routes/authentication');
+var usersRouter = require('./routes/users');
 
 const passport = require('passport');
 const bodyParser = require('body-parser');
@@ -34,15 +36,27 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
+
+const mongoose = require('mongoose');
+const { MONGODB_URI, MONGODB_DB } = process.env
+
+mongoose
+	.connect(MONGODB_URI, { useNewUrlParser: true })
+	.then(() => {
+		app.use('/users', usersRouter);
+	})
+
+
+
 app.use(express.static('public'));
 app.use(express.static('dist'));
 
 /* Routing setup */
-app.use('/', indexRouter);
-//app.use('/users', usersRouter);
+//app.use('/api/login', authenticationRouter);
 
 
 /* MONGOOSE SETUP */
+/*
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 
@@ -57,6 +71,13 @@ const UserSchema = new Schema({
 
 UserSchema.plugin(passportLocalMongoose);
 const UserDetails = mongoose.model('memetaille', UserSchema, 'users'); //Nom de la DB, Schema, nom de la collection
+
+
+passport.use(UserDetails.createStrategy());
+
+passport.serializeUser(UserDetails.serializeUser());
+passport.deserializeUser(UserDetails.deserializeUser());
+*/
 
 /*
 UserDetails.register({username:'paul', active: false}, 'paul');
