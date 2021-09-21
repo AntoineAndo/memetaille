@@ -37,7 +37,8 @@ exports.user_create_post = async function(req, res, next){
 
 	try{
 		await testUser.save()
-		res.send(testUser)
+
+		res.status(200).send(testUser)
 	}catch(error){
 		console.log("==============error=============");
 		console.log(error);
@@ -53,12 +54,20 @@ exports.user_create_post = async function(req, res, next){
 			res.status(500).send(error)
 		}
 	}
-
-	res.status(200).send(testUser)
 }
 
 exports.user_login = async function(req, res, next){
-	const { user } = await UserModel.authenticate()('testUser', '125678');
+
+	//Authenticate based on the request's body
+	const { user } = await UserModel.authenticate()(req.body.username, req.body.password);
+
+	//If login fails
+	if(user == false){
+		return res.status(401).send({
+			"error"		: true,
+			"message" 	: "Connection failed"
+		})
+	}
 
 	res.status(200).send(user);
 }
