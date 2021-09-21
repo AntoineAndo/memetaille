@@ -4,6 +4,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 
+const UserModel = require("./db/models/users.js");
+
 require('dotenv').config()
 
 //var authenticationRouter = require('./routes/authentication');
@@ -31,11 +33,6 @@ app.use(cookieParser());
 
 //app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-
-
 const mongoose = require('mongoose');
 const { MONGODB_URI, MONGODB_DB } = process.env
 
@@ -43,6 +40,21 @@ mongoose
 	.connect(MONGODB_URI, { useNewUrlParser: true })
 	.then(() => {
 		console.log("Connection successful")
+
+
+
+
+
+		//Initializing Passport	
+		app.use(passport.initialize());
+		app.use(passport.session());
+
+		passport.use(UserModel.createStrategy());
+		passport.serializeUser(UserModel.serializeUser());
+		passport.deserializeUser(UserModel.deserializeUser());
+
+
+		//Routes initialization
 		var usersRouter = require('./routes/users');
 		app.use('/users', usersRouter);
 	})
@@ -54,31 +66,6 @@ app.use(express.static('dist'));
 
 /* Routing setup */
 //app.use('/api/login', authenticationRouter);
-
-
-/* MONGOOSE SETUP */
-/*
-const mongoose = require('mongoose');
-const passportLocalMongoose = require('passport-local-mongoose');
-
-mongoose.connect('mongodb+srv://memetailleUser:papillon44@cluster0.ofx2k.mongodb.net/memetaille?retryWrites=true&w=majority',
-  { useNewUrlParser: true, useUnifiedTopology: true });
-
-const Schema = mongoose.Schema;
-const UserSchema = new Schema({
-  username: String,
-  password: String
-});
-
-UserSchema.plugin(passportLocalMongoose);
-const UserDetails = mongoose.model('memetaille', UserSchema, 'users'); //Nom de la DB, Schema, nom de la collection
-
-
-passport.use(UserDetails.createStrategy());
-
-passport.serializeUser(UserDetails.serializeUser());
-passport.deserializeUser(UserDetails.deserializeUser());
-*/
 
 /*
 UserDetails.register({username:'paul', active: false}, 'paul');

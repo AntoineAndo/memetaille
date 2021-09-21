@@ -12,7 +12,7 @@ exports.index = async function(req, res){
 }
 
 exports.user_get = async function(req, res){
-	const users = await UserModel.find({name: req.params.username})
+	const users = await UserModel.find({username: req.params.username})
 
 	//If the user isn't found
 	if(users.length == 0){
@@ -27,10 +27,12 @@ exports.user_get = async function(req, res){
 
 exports.user_create_post = async function(req, res, next){
 	const testUser = new UserModel({
-		name 	: "testUser",
-		active	: true,
-		height	: 180
+		username 	: "testUser",
+		active		: true,
+		height		: 180
 	})
+
+	await testUser.setPassword("12345678");
 
 	try{
 		await testUser.save()
@@ -41,4 +43,10 @@ exports.user_create_post = async function(req, res, next){
 	}
 
 	res.status(200)
+}
+
+exports.user_login = async function(req, res, next){
+	const { user } = await UserModel.authenticate()('testUser', '125678');
+
+	res.status(200).send(user);
 }
