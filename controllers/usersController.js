@@ -27,47 +27,46 @@ exports.user_get = async function(req, res){
 
 exports.user_create_post = async function(req, res, next){
 
-	const testUser = new UserModel({
+	var newUser = {
 		username 	: req.body.username,
 		email		: req.body.email,
 		height		: req.body.height
-	})
-
-	await testUser.setPassword(req.body.password);
+	}
 
 	try{
-		await testUser.save()
-
-		res.status(200).send(testUser)
+		UserModel.register(newUser, req.body.password, function(err, result){
+			if(err){
+				//403 Forbidden
+				res.status(403).send(err)
+			}else{
+				res.status(200).send(newUser)
+			}
+		})
 	}catch(error){
-		console.log("==============error=============");
-		console.log(error);
 
-		//E11000 duplicate key error collection
-		//Si l'utilisateur existe déja en base de donnée
-		if(error.code == 11000){
-			//403 Forbidden
-			res.status(403).send(error)
-
-			return;
-		}else{
-			res.status(500).send(error)
-		}
 	}
 }
 
 exports.user_login = async function(req, res, next){
 
+	var authenticate = UserModel.authenticate();
+
 	//Authenticate based on the request's body
-	const { user } = await UserModel.authenticate()(req.body.username, req.body.password);
+	authenticate(req.body.email, req.body.password, function(err, user){
+		if(err){
+			res.status(401).send(err)
+		}else{
 
-	//If login fails
-	if(user == false){
-		return res.status(401).send({
-			"error"		: true,
-			"message" 	: "Connection failed"
-		})
-	}
-
-	res.status(200).send(user);
+			//If login fails
+			if(user == false){
+				return res.status(401).send({
+					"error"		: true,
+					"message" 	: "Connection failed"
+				})
+			}else{
+				//If login is successful
+				res.status(200).send(user);
+			}
+		}
+	});
 }
