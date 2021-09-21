@@ -26,23 +26,35 @@ exports.user_get = async function(req, res){
 }
 
 exports.user_create_post = async function(req, res, next){
+
 	const testUser = new UserModel({
-		username 	: "testUser",
-		active		: true,
-		height		: 180
+		username 	: req.body.username,
+		email		: req.body.email,
+		height		: req.body.height
 	})
 
-	await testUser.setPassword("12345678");
+	await testUser.setPassword(req.body.password);
 
 	try{
 		await testUser.save()
 		res.send(testUser)
 	}catch(error){
-		console.log(error)
-		res.status(500).send(error)
+		console.log("==============error=============");
+		console.log(error);
+
+		//E11000 duplicate key error collection
+		//Si l'utilisateur existe déja en base de donnée
+		if(error.code == 11000){
+			//403 Forbidden
+			res.status(403).send(error)
+
+			return;
+		}else{
+			res.status(500).send(error)
+		}
 	}
 
-	res.status(200)
+	res.status(200).send(testUser)
 }
 
 exports.user_login = async function(req, res, next){

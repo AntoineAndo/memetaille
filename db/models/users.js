@@ -7,7 +7,7 @@ var UserSchema = new Schema(
 {
     _someId: Schema.Types.ObjectId,
     name		: String,
-    active		: Boolean,
+    active		: {type: Boolean, default: true },
     height		: { type: Number, min: 54, max: 272, required: true },
     email		: String,
     updated_on	: { type: Date, default: Date.now() }
