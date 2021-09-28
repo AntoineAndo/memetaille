@@ -41,18 +41,14 @@ mongoose
 	.then(() => {
 		console.log("Connection successful")
 
-
-
-
-
 		//Initializing Passport	
 		app.use(passport.initialize());
 		app.use(passport.session());
 
+		//Creates a passport "local" strategy
 		passport.use(UserModel.createStrategy());
 		passport.serializeUser(UserModel.serializeUser());
 		passport.deserializeUser(UserModel.deserializeUser());
-
 
 		//Routes initialization
 		var usersRouter = require('./routes/users');

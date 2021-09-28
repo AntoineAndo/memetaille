@@ -1,6 +1,14 @@
 var UserModel = require("../db/models/users.js");
+var io = require("socket.io-client");
 
 exports.index = async function(req, res){
+
+	var socket = io("http://localhost:3000");
+	socket.on("connect", () => {  console.log(socket.id); });
+	socket.on("data", () => { console.log("DAATAA")})
+
+	
+
 	const users = await UserModel.find({});
 
 	try{
@@ -49,6 +57,9 @@ exports.user_create_post = async function(req, res, next){
 
 exports.user_login = async function(req, res, next){
 
+	res.status(200).send(req.user);
+
+/*
 	var authenticate = UserModel.authenticate();
 
 	//Authenticate based on the request's body
@@ -69,4 +80,5 @@ exports.user_login = async function(req, res, next){
 			}
 		}
 	});
+*/
 }
