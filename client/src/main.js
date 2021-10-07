@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import store from './_store/store';
 
 // import VueSocketIO from 'vue-socket.io';
 
@@ -8,6 +9,7 @@ import router from './router';
 const vueApp = createApp(App);
 
 vueApp.use(router);
+vueApp.use(store);
 /*
 vueApp.use(new VueSocketIO({
   debug: true,

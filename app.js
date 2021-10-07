@@ -8,7 +8,7 @@ const UserModel = require("./db/models/users.js");
 
 require('dotenv').config()
 
-//var authenticationRouter = require('./routes/authentication');
+var authenticationRouter = require('./routes/authentication');
 
 const passport = require('passport');
 const bodyParser = require('body-parser');
@@ -22,12 +22,10 @@ var app = express();
 
 app.use(logger('dev'));
 app.use(cors());
-/*
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-*/
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(expressSession);
 app.use(cookieParser());
 
@@ -61,7 +59,7 @@ app.use(express.static('public'));
 app.use(express.static('dist'));
 
 /* Routing setup */
-//app.use('/api/login', authenticationRouter);
+app.use('/api', authenticationRouter);
 
 /*
 UserDetails.register({username:'paul', active: false}, 'paul');

@@ -57,6 +57,7 @@ exports.user_create_post = async function(req, res, next){
 
 exports.user_login = async function(req, res, next){
 
+	console.log(req);
 	res.status(200).send(req.user);
 
 /*
