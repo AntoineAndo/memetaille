@@ -12,15 +12,11 @@ function handleResponse(response) {
       const error = (data && data.message) || response.statusText;
       return Promise.reject(error);
     }
-
     return data;
   });
 }
 
 function login(email, password) {
-  console.log('LOGIN');
-  console.log(email);
-  console.log(password);
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -30,16 +26,44 @@ function login(email, password) {
   return fetch(`${process.env.VUE_APP_API_URL}/users/login`, requestOptions)
     .then(handleResponse)
     .then((user) => {
-      console.log(user);
       // login successful if there's a jwt token in the response
       if (user.token) {
         localStorage.setItem('user', JSON.stringify(user));
+        console.log(localStorage);
       }
 
       return user;
     });
 }
 
+function register(email, password, username, height) {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email,
+      password,
+      username,
+      height,
+    }),
+  };
+
+  return fetch(`${process.env.VUE_APP_API_URL}/users/register`, requestOptions)
+    .then(handleResponse)
+    .then((user) => {
+      console.log(user);
+      // login successful if there's a jwt token in the response
+      /*
+      if (user.token) {
+        localStorage.setItem('user', JSON.stringify(user));
+        console.log(localStorage);
+      }
+      */
+      return user;
+    });
+}
+
 export const userService = {
   login,
+  register,
 };

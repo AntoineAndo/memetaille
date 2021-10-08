@@ -16,6 +16,13 @@
       <button class="btn btn-prmimary">Login</button>
     </div>
   </form>
+
+  <router-link
+    to="/register">
+      <NavLink>
+       Register
+      </NavLink>
+    </router-link>
 </template>
 <script>
 

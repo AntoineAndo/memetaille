@@ -3,19 +3,26 @@ import { userService } from '../_services/user.service';
 
 export default createStore({
   state: {
-    testStore: 'initial store value',
+    loginAttempts: 0,
+    registerAttempts: 0,
   },
   mutations: {
-    changeTestValue(state, value) {
-      state.testStore = value;
+    loginAttempt(state) {
+      state.loginAttempts += 1;
+    },
+    registerAttempts(state) {
+      state.registerAttempts += 1;
     },
   },
   actions: {
     login(context, payload) {
-      context.commit('changeTestValue', payload.value);
-      console.log('User: ');
-      console.log(payload);
+      context.commit('loginAttempt');
       userService.login(payload.user, payload.password);
+    },
+    register(context, payload) {
+      context.commit('registerAttempts');
+      // Payload properties spread
+      userService.register(...Object.values(payload));
     },
   },
 });
