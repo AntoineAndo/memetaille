@@ -2,13 +2,13 @@ var UserModel = require("../db/models/users.js");
 var io = require("socket.io-client");
 const jwt = require('jsonwebtoken');
 
+var passport = require('passport');
+
 exports.index = async function(req, res){
 
 	var socket = io("http://localhost:3000");
 	socket.on("connect", () => {  console.log(socket.id); });
 	socket.on("data", () => { console.log("DAATAA")})
-
-	
 
 	const users = await UserModel.find({});
 
@@ -34,64 +34,38 @@ exports.user_get = async function(req, res){
 	}
 }
 
-exports.user_create_post = async function(req, res, next){
-
-	var newUser = {
-		username 	: req.body.username,
-		email		: req.body.email,
-		height		: req.body.height
-	}
-
-	try{
-		UserModel.register(newUser, req.body.password, function(err, result){
-			if(err){
-				//403 Forbidden
-				res.status(403).send(err)
-			}else{
-				res.status(200).send(newUser)
-			}
-		})
-	}catch(error){
-
-	}
+exports.user_create_post = function(req, res, next){
+	res.status(200).send({
+		message: 'Signup successful',
+		user: req.user,
+	});
 }
 
 exports.user_login = async function(req, res, next){
+	passport.authenticate('login', { session: false}, function(err, user, info){
+		req.login(
+			user,
+			{ session: false },
+			async (error) => {
+				if(error) return next(error);
 
-	const payload = {
-		...req.user,
-		exp: Math.floor(Date.now() / 1000) + (60 * 60)
-	};
+				const payload = {
+					...user,
+					exp: Math.floor(Date.now() / 1000) + (60 * 60)
+				};
 
-	jwt.sign(payload, 'tonkotsu', (err, token) =>{
-		if(err){
-			console.log(err);
-			return res.status(401).send(err);
-		}
+				const token = jwt.sign(payload, 'tonkotsu');
 
-		res.status(200).send({...req.user,token});
-
-	}); // 1 hour
-/*
-	var authenticate = UserModel.authenticate();
-
-	//Authenticate based on the request's body
-	authenticate(req.body.email, req.body.password, function(err, user){
-		if(err){
-			res.status(401).send(err)
-		}else{
-
-			//If login fails
-			if(user == false){
-				return res.status(401).send({
-					"error"		: true,
-					"message" 	: "Connection failed"
-				})
-			}else{
-				//If login is successful
-				res.status(200).send(user);
+				return res.status(200).send({user,token});
 			}
-		}
-	});
-*/
+		)
+	})(req, res, next)
+}
+
+exports.user_profile = function(req, res, next){
+    res.status(200).send({
+      message: 'You made it to the secure route',
+      user: req.user,
+      token: req.query.jwt
+    })
 }

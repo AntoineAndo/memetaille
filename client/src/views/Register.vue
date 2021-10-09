@@ -18,7 +18,7 @@
       <input v-model="formPassword" v-bind:type="formPasswordFieldType" name="password">
     </div>
     <div class="form-group">
-      <button class="btn btn-prmimary">Login</button>
+      <button class="btn btn-prmimary">Register</button>
     </div>
   </form>
 

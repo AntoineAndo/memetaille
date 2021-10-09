@@ -1,17 +1,40 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
+var bcrypt = require('bcrypt');
 
-const passportLocalMongoose = require('passport-local-mongoose');
+// const passportLocalMongoose = require('passport-local-mongoose');
 
 var UserSchema = new Schema(
 {
     _someId		: Schema.Types.ObjectId,
+    email		: { type: String, unique: true, required: true },
+    password	: { type: String, required: true },
     username	: { type: String, unique: false },
     active		: { type: Boolean, default: true },
     height		: { type: Number, min: 54, max: 272, required: true },
-    updated_on	: { type: Date, default: Date.now() }
+    updated_on	: { type: Date, default: Date.now() },
 })
 
+//Pre-hook: called before the User is saved in DB
+UserSchema.pre(
+	'save',
+	async function(next) {
+		const user = this; // Refers to the document about to be saved
+		const hash = await bcrypt.hash(this.password, 10);
+
+		this.password = hash;
+		next();
+	});
+
+UserSchema.methods.isValidPassword = async function(password) {
+	const user = this;
+	const compare = await bcrypt.compare(password, user.password);
+
+	return compare;
+}
+
+
+/*
 //Passport capabilities is pluged in the UserSchema
 var passportOptions = {
 	usernameField : "email",
@@ -26,8 +49,9 @@ var passportOptions = {
 		UserExistsError : "A user with this email address already exists"
 	}
 }
+*/
 
-UserSchema.plugin(passportLocalMongoose, passportOptions);
+// UserSchema.plugin(passportLocalMongoose, passportOptions);
 
 module.exports = mongoose.model('users', UserSchema );
 

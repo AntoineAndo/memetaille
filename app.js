@@ -41,11 +41,13 @@ mongoose
 		app.use(passport.initialize());
 		app.use(passport.session());
 
-		//Creates a passport "local" strategy
+		//Creates Passport "local" strategies
+		require('./auth/auth');
+/*
 		passport.use(UserModel.createStrategy());
 		passport.serializeUser(UserModel.serializeUser());
 		passport.deserializeUser(UserModel.deserializeUser());
-
+*/
 		//Routes initialization
 		var usersRouter = require('./routes/users');
 		app.use('/users', usersRouter);

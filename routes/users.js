@@ -10,16 +10,16 @@ var passport = require("passport")
 router.get('/', userController.index);
 
 //Requete POST pour insérer un utilisateur
-router.post('/register', userController.user_create_post)
+router.post('/register', passport.authenticate('signup', { session: false }), userController.user_create_post);
 
 //Requete POST pour authentifier l'utilisateur
-router.post('/login', 
-			passport.authenticate("local", { session: false }), 
-			userController.user_login)
+router.post('/login', userController.user_login);
 //router.post('/login', passport.authenticate("local"), userController.user_login)
 
+router.get('/profile', passport.authenticate('jwt', { session: false }), userController.user_profile);
+
 //Requete GET pour récupérer un utilisateur par son username
-router.get('/:username', userController.user_get)
+router.get('/:username', userController.user_get);
 
 
 module.exports = router;
