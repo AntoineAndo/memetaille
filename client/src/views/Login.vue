@@ -10,12 +10,13 @@
     <div class="form-group">
       <label for="password">Password</label>
       <input v-model="formPassword" v-bind:type="formPasswordFieldType" name="password">
-      <button v-on:click="togglePasswordVisibility">{{labelPasswordVisibility}}</button>
+      <!-- <button v-on:click="togglePasswordVisibility">{{labelPasswordVisibility}}</button> -->
     </div>
     <div class="form-group">
       <button class="btn btn-prmimary">Login</button>
     </div>
   </form>
+      <button v-on:click="testAPI" class="btn btn-secondary">Test API</button>
 
   <router-link
     to="/register">
@@ -27,6 +28,7 @@
 <script>
 
 import { useStore } from 'vuex';
+import { userService } from '../_services/user.service';
 
 export default {
   name: 'Login',
@@ -56,6 +58,10 @@ export default {
         this.labelPasswordVisibility = 'Afficher mot de passe';
         this.formPasswordFieldType = 'password';
       }
+    },
+    testAPI() {
+      const data = JSON.parse(localStorage.getItem('user'));
+      userService.getUser(data.user, data.token);
     },
     handleSubmit(e) {
       this.submitted = true;

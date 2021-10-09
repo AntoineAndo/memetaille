@@ -60,14 +60,15 @@ passport.use(
 );
 
 passport.use(
-  new JWTstrategy(
+  new JWTStrategy(
     {
       secretOrKey: 'tonkotsu',
-      jwtFromRequest: ExtractJWT.fromUrlQueryParameter('jwt')
+      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
     },
     async (token, done) => {
+      console.log(token);
       try {
-        return done(null, token.user);
+        return done(null, token);
       } catch (error) {
         done(error);
       }

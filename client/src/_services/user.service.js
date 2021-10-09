@@ -63,7 +63,32 @@ function register(email, password, username, height) {
     });
 }
 
+function getUser(user, token) {
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  return fetch(`${process.env.VUE_APP_API_URL}/users/profile`, requestOptions)
+    .then(handleResponse)
+    .then((data) => {
+      console.log(data);
+      // login successful if there's a jwt token in the response
+      /*
+      if (user.token) {
+        localStorage.setItem('user', JSON.stringify(user));
+        console.log(localStorage);
+      }
+      */
+      return user;
+    });
+}
+
 export const userService = {
   login,
   register,
+  getUser,
 };

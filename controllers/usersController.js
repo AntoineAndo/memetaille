@@ -63,6 +63,7 @@ exports.user_login = async function(req, res, next){
 }
 
 exports.user_profile = function(req, res, next){
+	console.log('test');
     res.status(200).send({
       message: 'You made it to the secure route',
       user: req.user,
