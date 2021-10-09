@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node --trace-warnings --unhandled-rejections=strict ./bin/www"
+    "start": "nodemon --trace-warnings --unhandled-rejections=strict ./bin/www"
   },
   "dependencies": {
     "@vue/cli": "^4.5.13",
@@ -16,6 +16,7 @@
     "express": "^4.16.4",
     "express-session": "^1.17.2",
     "joi": "^17.4.2",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.4",
     "monk": "^7.3.4",
     "morgan": "^1.9.1",

@@ -28,8 +28,8 @@ function login(email, password) {
     .then((user) => {
       // login successful if there's a jwt token in the response
       if (user.token) {
+        console.log(user);
         localStorage.setItem('user', JSON.stringify(user));
-        console.log(localStorage);
       }
 
       return user;

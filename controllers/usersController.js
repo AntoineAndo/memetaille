@@ -1,5 +1,6 @@
 var UserModel = require("../db/models/users.js");
 var io = require("socket.io-client");
+const jwt = require('jsonwebtoken');
 
 exports.index = async function(req, res){
 
@@ -57,8 +58,20 @@ exports.user_create_post = async function(req, res, next){
 
 exports.user_login = async function(req, res, next){
 
-	res.status(200).send(req.user);
+	const payload = {
+		...req.user,
+		exp: Math.floor(Date.now() / 1000) + (60 * 60)
+	};
 
+	jwt.sign(payload, 'tonkotsu', (err, token) =>{
+		if(err){
+			console.log(err);
+			return res.status(401).send(err);
+		}
+
+		res.status(200).send({...req.user,token});
+
+	}); // 1 hour
 /*
 	var authenticate = UserModel.authenticate();
 

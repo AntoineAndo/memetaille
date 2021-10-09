@@ -21,6 +21,7 @@ export default createStore({
     },
     register(context, payload) {
       context.commit('registerAttempts');
+
       // Payload properties spread
       userService.register(...Object.values(payload));
     },

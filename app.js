@@ -8,8 +8,6 @@ const UserModel = require("./db/models/users.js");
 
 require('dotenv').config()
 
-var authenticationRouter = require('./routes/authentication');
-
 const passport = require('passport');
 const bodyParser = require('body-parser');
 const expressSession = require('express-session')({
@@ -59,7 +57,6 @@ app.use(express.static('public'));
 app.use(express.static('dist'));
 
 /* Routing setup */
-app.use('/api', authenticationRouter);
 
 /*
 UserDetails.register({username:'paul', active: false}, 'paul');
