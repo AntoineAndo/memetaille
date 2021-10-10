@@ -16,10 +16,24 @@ router.post('/register', passport.authenticate('signup', { session: false }), us
 router.post('/login', userController.user_login);
 //router.post('/login', passport.authenticate("local"), userController.user_login)
 
-router.get('/profile', passport.authenticate('jwt', { session: false }), userController.user_profile);
+// router.get('/:id', passport.authenticate('jwt', { session: false }), userController.user_profile);
+// router.get('/:id', userController.user_profile_secured);
+router.get('/:id', function(req, res, next){
+	passport.authenticate('jwt', {session: false}, function(err, user, info){
+		if(!user){
+			return res.status(401).json({
+				'message': 'Token expired'
+			});
+		}
+		res.status(200).send(user);
+
+	})(req, res, next);
+});
+
+
+
+
 
 //Requete GET pour récupérer un utilisateur par son username
-router.get('/:username', userController.user_get);
-
-
+//router.get('/:username', userController.user_get);
 module.exports = router;

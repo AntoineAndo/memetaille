@@ -64,13 +64,11 @@ passport.use(
     {
       secretOrKey: 'tonkotsu',
       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-    },
-    async (token, done) => {
-      console.log(token);
+    }, (token, done) => {
       try {
         return done(null, token);
       } catch (error) {
-        done(error);
+        return done(error, false);
       }
     }
   )

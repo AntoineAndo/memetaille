@@ -58,6 +58,12 @@ mongoose
 app.use(express.static('public'));
 app.use(express.static('dist'));
 
+const jsonErrorHandler = async (err, req, res, next) => {
+  res.status(401).send({ error: err });
+}
+
+app.use(jsonErrorHandler);
+
 /* Routing setup */
 
 /*

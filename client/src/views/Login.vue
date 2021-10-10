@@ -61,7 +61,7 @@ export default {
     },
     testAPI() {
       const data = JSON.parse(localStorage.getItem('user'));
-      userService.getUser(data.user, data.token);
+      return userService.getUser(data.user, data.token);
     },
     handleSubmit(e) {
       this.submitted = true;

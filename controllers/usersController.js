@@ -2,6 +2,8 @@ var UserModel = require("../db/models/users.js");
 var io = require("socket.io-client");
 const jwt = require('jsonwebtoken');
 
+var ObjectId = require('mongodb').ObjectId;
+
 var passport = require('passport');
 
 exports.index = async function(req, res){
@@ -51,7 +53,7 @@ exports.user_login = async function(req, res, next){
 
 				const payload = {
 					...user,
-					exp: Math.floor(Date.now() / 1000) + (60 * 60)
+					exp: Math.floor(Date.now() / 1000) + (60)
 				};
 
 				const token = jwt.sign(payload, 'tonkotsu');
@@ -61,12 +63,26 @@ exports.user_login = async function(req, res, next){
 		)
 	})(req, res, next)
 }
+//passport.authenticate('jwt', { session: false }), userController.user_profile);
 
-exports.user_profile = function(req, res, next){
-	console.log('test');
-    res.status(200).send({
-      message: 'You made it to the secure route',
-      user: req.user,
-      token: req.query.jwt
-    })
+exports.user_profile_secured = function(req, res, next){
+	passport.authenticate('bearer', { session: false }, function(err, user, info){
+		if(err){
+			console.log("error");
+			console.log(err);
+		}
+		res.status(200).send("ok");
+		/*
+		UserModel.findOne(ObjectId(req.params.id))
+		.then(doc => {
+			console.log(doc)
+			res.status(200).send({
+				doc: doc,
+			});
+		})
+		.catch(err => {
+			console.log(err);
+		});	
+		*/
+	});
 }

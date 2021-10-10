@@ -16,5 +16,7 @@ module.exports = {
     'import/prefer-default-export' : "off",
     'no-unused-vars' : 'off',
     'linebreak-style': 0,
+    'no-underscore-dangle' : 'off',
+    'arrow-parens' : 'off',
   },
 };

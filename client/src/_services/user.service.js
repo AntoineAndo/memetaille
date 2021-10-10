@@ -1,11 +1,16 @@
+function logout() {
+  localStorage.removeItem('user');
+}
+
 function handleResponse(response) {
+  console.log('RESPONSE');
   console.log(response);
   return response.text().then((text) => {
     const data = text && JSON.parse(text);
     if (!response.ok) {
       if (response.status === 401) {
         // auto logout if 401 response returned from api
-        // logout();
+        logout();
         window.location.reload(true);
       }
 
@@ -63,16 +68,24 @@ function register(email, password, username, height) {
     });
 }
 
-function getUser(user, token) {
-  const requestOptions = {
-    method: 'GET',
-    headers: {
+function getUser(user, token, cb) {
+  let options;
+  if (token) {
+    options = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
-    },
+    };
+  } else {
+    options = {
+      'Content-Type': 'application/json',
+    };
+  }
+  const requestOptions = {
+    method: 'GET',
+    headers: options,
   };
 
-  return fetch(`${process.env.VUE_APP_API_URL}/users/profile`, requestOptions)
+  return fetch(`${process.env.VUE_APP_API_URL}/users/${user}`, requestOptions)
     .then(handleResponse)
     .then((data) => {
       console.log(data);
@@ -83,7 +96,7 @@ function getUser(user, token) {
         console.log(localStorage);
       }
       */
-      return user;
+      cb(null, data._doc);
     });
 }
 
