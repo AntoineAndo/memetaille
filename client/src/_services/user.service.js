@@ -21,23 +21,22 @@ function handleResponse(response) {
   });
 }
 
-function login(email, password) {
+function login(email, password, cb) {
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
   };
 
-  return fetch(`${process.env.VUE_APP_API_URL}/users/login`, requestOptions)
+  fetch(`${process.env.VUE_APP_API_URL}/users/login`, requestOptions)
     .then(handleResponse)
     .then((user) => {
       // login successful if there's a jwt token in the response
       if (user.token) {
         console.log(user);
         localStorage.setItem('user', JSON.stringify(user));
+        cb(user);
       }
-
-      return user;
     });
 }
 

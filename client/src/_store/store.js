@@ -17,7 +17,7 @@ export default createStore({
   actions: {
     login(context, payload) {
       context.commit('loginAttempt');
-      userService.login(payload.user, payload.password);
+      userService.login(payload.user, payload.password, payload.cb);
     },
     register(context, payload) {
       context.commit('registerAttempts');

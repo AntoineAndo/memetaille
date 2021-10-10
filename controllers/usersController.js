@@ -53,7 +53,7 @@ exports.user_login = async function(req, res, next){
 
 				const payload = {
 					...user,
-					exp: Math.floor(Date.now() / 1000) + (60)
+					exp: Math.floor(Date.now() / 1000) + (60*60)
 				};
 
 				const token = jwt.sign(payload, 'tonkotsu');

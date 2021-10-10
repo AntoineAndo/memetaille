@@ -18,5 +18,6 @@ module.exports = {
     'linebreak-style': 0,
     'no-underscore-dangle' : 'off',
     'arrow-parens' : 'off',
+    'eqeqeq' : 'off',
   },
 };

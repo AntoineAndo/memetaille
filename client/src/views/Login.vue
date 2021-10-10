@@ -67,8 +67,15 @@ export default {
       this.submitted = true;
       const { formUsername, formPassword } = this;
       if (formUsername && formPassword) {
-        this.store.dispatch('login', { user: this.formUsername, password: this.formPassword });
+        this.store.dispatch('login', { user: this.formUsername, password: this.formPassword, cb: this.cbSubmit });
       }
+    },
+    cbSubmit(user) {
+      if (user == false) {
+        // Handle user not found
+        return;
+      }
+      this.$router.push('Profile');
     },
   },
   computed: {
