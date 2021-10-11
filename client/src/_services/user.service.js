@@ -99,8 +99,35 @@ function getUser(user, token, cb) {
     });
 }
 
+function getUsers(localData, cb) {
+  let options;
+  if (localData.token) {
+    options = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localData.token}`,
+    };
+  } else {
+    options = {
+      'Content-Type': 'application/json',
+    };
+  }
+  const requestOptions = {
+    method: 'GET',
+    headers: options,
+  };
+
+  return fetch(`${process.env.VUE_APP_API_URL}/users`, requestOptions)
+    .then(handleResponse)
+    .then((data) => {
+      console.log(data);
+      cb(null, data);
+    });
+}
+
 export const userService = {
   login,
+  logout,
   register,
   getUser,
+  getUsers,
 };

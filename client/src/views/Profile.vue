@@ -8,6 +8,7 @@
       <p>Height: {{user.height}}</p>
     </div>
   </div>
+  <a href="#" class="item" @click="logout">Logout</a>
 </template>
 
 <script>
@@ -62,6 +63,11 @@ export default {
       } else {
         this.user = user;
       }
+    },
+    logout() {
+      console.log('LOGOUT');
+      userService.logout();
+      this.$router.push('/login');
     },
   },
 };
