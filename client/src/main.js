@@ -6,14 +6,12 @@ import store from './_store/store';
 import App from './App.vue';
 import router from './router';
 
-const vueApp = createApp(App);
+import initFacebookSdk from './_helpers/init-facebook-sdk';
 
-vueApp.use(router);
-vueApp.use(store);
-/*
-vueApp.use(new VueSocketIO({
-  debug: true,
-  connection: 'http://localhost:3000',
-}));
-*/
-vueApp.mount('#app');
+initFacebookSdk().then(() => {
+  const vueApp = createApp(App);
+
+  vueApp.use(router);
+  vueApp.use(store);
+  vueApp.mount('#app');
+});

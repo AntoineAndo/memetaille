@@ -1,26 +1,9 @@
 var UserModel = require("../db/models/users.js");
-var io = require("socket.io-client");
 const jwt = require('jsonwebtoken');
-
 var ObjectId = require('mongodb').ObjectId;
-
 var passport = require('passport');
+var request = require('request');
 
-exports.index = async function(req, res){
-
-	var socket = io("http://localhost:3000");
-	socket.on("connect", () => {  console.log(socket.id); });
-	socket.on("data", () => { console.log("DAATAA")})
-
-	const users = await UserModel.find({});
-
-	try{
-		res.status(200).send(users)
-	}catch(error){
-		console.log(error)
-		res.status(500).send(error)
-	}
-}
 
 exports.user_get = async function(req, res){
 	const users = await UserModel.find({username: req.params.username})
@@ -63,7 +46,47 @@ exports.user_login = async function(req, res, next){
 		)
 	})(req, res, next)
 }
-//passport.authenticate('jwt', { session: false }), userController.user_profile);
+
+exports.user_fb_login = async function(req, res, next){
+	const accessToken = req.body.token;
+
+	// Verify access token
+	request(`https://graph.facebook.com/me?access_token=${accessToken}`, async function (error, response, body) {
+		if (!error && response.statusCode == 200) {
+			//Access token is valid
+			const newFacebookID = JSON.parse(body).id;
+
+			//findOrCreate user
+			UserModel.findOne({ facebookID: newFacebookID }, async (err, user) => {
+		        if(!user){
+					user = await UserModel.create({
+						facebookID: newFacebookID, 
+					});
+
+		        }
+
+				req.login(
+					user,
+					{ session: false },
+					async (error) => {
+						if(error) return next(error);
+
+						const payload = {
+							...user,
+							exp: Math.floor(Date.now() / 1000) + (60*60)
+						};
+
+						const token = jwt.sign(payload, 'tonkotsu');
+
+						return res.status(200).json({user,token});
+					}
+				)
+
+			});
+		}
+	})
+}
+
 
 exports.user_profile_secured = function(req, res, next){
 	passport.authenticate('bearer', { session: false }, function(err, user, info){
@@ -72,17 +95,5 @@ exports.user_profile_secured = function(req, res, next){
 			console.log(err);
 		}
 		res.status(200).send("ok");
-		/*
-		UserModel.findOne(ObjectId(req.params.id))
-		.then(doc => {
-			console.log(doc)
-			res.status(200).send({
-				doc: doc,
-			});
-		})
-		.catch(err => {
-			console.log(err);
-		});	
-		*/
 	});
 }

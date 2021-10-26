@@ -26,6 +26,9 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(expressSession);
 app.use(cookieParser());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 //app.use(express.static(path.join(__dirname, 'public')));
 
@@ -41,15 +44,13 @@ mongoose
 		app.use(passport.initialize());
 		app.use(passport.session());
 
-		//Creates Passport "local" strategies
+		//Creates Passport strategies
 		require('./auth/auth');
-/*
-		passport.use(UserModel.createStrategy());
-		passport.serializeUser(UserModel.serializeUser());
-		passport.deserializeUser(UserModel.deserializeUser());
-*/
+
 		//Routes initialization
 		var usersRouter = require('./routes/users');
+		var authenticationRouter = require('./routes/auth');
+		app.use('/auth', authenticationRouter);
 		app.use('/users', usersRouter);
 	})
 

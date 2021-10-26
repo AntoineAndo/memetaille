@@ -48,9 +48,9 @@ export default {
     handleSubmit(e) {
       this.submitted = true;
       const {
-        formUsername,
-        formPassword,
         formEmail,
+        formPassword,
+        formUsername,
         formHeight,
       } = this;
       if (formEmail && formPassword && formUsername && formHeight) {
@@ -59,6 +59,9 @@ export default {
           formPassword,
           formUsername,
           formHeight,
+          cb: () => {
+            this.$router.push('Login');
+          },
         });
       }
     },

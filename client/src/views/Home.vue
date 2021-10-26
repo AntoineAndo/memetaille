@@ -1,10 +1,6 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
-    <div>
-      <p v-if="isConnected">We're connected to the server!</p>
-      <p>Message from server: "{{socketMessage}}"</p>
-    </div>
     <div class="users">
       <div v-if="loadin">
         Loading
@@ -36,7 +32,6 @@ export default {
   created() {
     // fetch the data when the view is created and the data is
     // already being observed
-    console.log('Created');
     this.fetchUsers();
     return {};
   },

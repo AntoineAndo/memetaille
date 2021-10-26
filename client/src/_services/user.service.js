@@ -2,6 +2,10 @@ function logout() {
   localStorage.removeItem('user');
 }
 
+function loginSession(user) {
+  localStorage.setItem('user', JSON.stringify(user));
+}
+
 function handleResponse(response) {
   console.log('RESPONSE');
   console.log(response);
@@ -28,19 +32,18 @@ function login(email, password, cb) {
     body: JSON.stringify({ email, password }),
   };
 
-  fetch(`${process.env.VUE_APP_API_URL}/users/login`, requestOptions)
+  fetch(`${process.env.VUE_APP_API_URL}/auth/login`, requestOptions)
     .then(handleResponse)
     .then((user) => {
       // login successful if there's a jwt token in the response
       if (user.token) {
-        console.log(user);
-        localStorage.setItem('user', JSON.stringify(user));
+        loginSession(user);
         cb(user);
       }
     });
 }
 
-function register(email, password, username, height) {
+function register(email, password, username, height, cb) {
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -52,10 +55,9 @@ function register(email, password, username, height) {
     }),
   };
 
-  return fetch(`${process.env.VUE_APP_API_URL}/users/register`, requestOptions)
+  fetch(`${process.env.VUE_APP_API_URL}/auth/register`, requestOptions)
     .then(handleResponse)
-    .then((user) => {
-      console.log(user);
+    .then((data) => {
       // login successful if there's a jwt token in the response
       /*
       if (user.token) {
@@ -63,7 +65,7 @@ function register(email, password, username, height) {
         console.log(localStorage);
       }
       */
-      return user;
+      cb(data);
     });
 }
 
@@ -130,4 +132,6 @@ export const userService = {
   register,
   getUser,
   getUsers,
+  handleResponse,
+  loginSession,
 };

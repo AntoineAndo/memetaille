@@ -19,5 +19,8 @@ module.exports = {
     'no-underscore-dangle' : 'off',
     'arrow-parens' : 'off',
     'eqeqeq' : 'off',
+    'no-undef' : 'off',
+    'dot-notation' : 'off',
+    'func-names' : 'off',
   },
 };

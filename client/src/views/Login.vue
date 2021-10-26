@@ -1,11 +1,9 @@
 <template>
   <h1 v-bind:attribut="dataAttr">{{title}}</h1>
-  {{test}}
-
   <form @submit.prevent="handleSubmit">
     <div class="form-group">
-      <label for="username">Username</label>
-      <input v-model="formUsername" type="text" name="username">
+      <label for="email">Email</label>
+      <input v-model="formEmail" type="text" name="email">
     </div>
     <div class="form-group">
       <label for="password">Password</label>
@@ -16,8 +14,15 @@
       <button class="btn btn-prmimary">Login</button>
     </div>
   </form>
-      <button v-on:click="testAPI" class="btn btn-secondary">Test API</button>
-
+  <div class="card">
+      <h4 class="card-header">-- OR -- </h4>
+      <div class="card-body">
+          <button class="btn btn-facebook" @click="fbLogin">
+              <i class="fa fa-facebook mr-1"></i>
+              Login with Facebook
+          </button>
+      </div>
+  </div>
   <router-link
     to="/register">
       <NavLink>
@@ -28,10 +33,12 @@
 <script>
 
 import { useStore } from 'vuex';
-import { userService } from '../_services/user.service';
+import { userService, fbService } from '../_services/index';
 
 export default {
   name: 'Login',
+  components: {
+  },
   setup() {
     const store = useStore();
     return {
@@ -43,10 +50,11 @@ export default {
       title: 'Login 1',
       submitted: false,
       dataAttr: 'test attr',
-      formUsername: '',
+      formEmail: '',
       formPassword: '',
       formPasswordFieldType: 'password',
       labelPasswordVisibility: 'Afficher mot de passe',
+      FB: undefined,
     };
   },
   methods: {
@@ -59,15 +67,11 @@ export default {
         this.formPasswordFieldType = 'password';
       }
     },
-    testAPI() {
-      const data = JSON.parse(localStorage.getItem('user'));
-      return userService.getUser(data.user, data.token);
-    },
     handleSubmit(e) {
       this.submitted = true;
-      const { formUsername, formPassword } = this;
-      if (formUsername && formPassword) {
-        this.store.dispatch('login', { user: this.formUsername, password: this.formPassword, cb: this.cbSubmit });
+      const { formEmail, formPassword } = this;
+      if (formEmail && formPassword) {
+        this.store.dispatch('login', { email: this.formEmail, password: this.formPassword, cb: this.cbSubmit });
       }
     },
     cbSubmit(user) {
@@ -77,6 +81,17 @@ export default {
       }
       this.$router.push('Profile');
     },
+    getUserData() {
+      this.FB.api('/me', 'GET', { fields: 'id,name,email,picture' },
+        user => {
+          console.log(user);
+          this.personalID = user.id;
+          this.email = user.email;
+          this.name = user.name;
+          this.picture = user.picture.data.url;
+        });
+    },
+    fbLogin: fbService.login,
   },
   computed: {
     test() { return this.store.state.testStore; },

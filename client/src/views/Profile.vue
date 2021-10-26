@@ -65,7 +65,6 @@ export default {
       }
     },
     logout() {
-      console.log('LOGOUT');
       userService.logout();
       this.$router.push('/login');
     },

@@ -17,13 +17,13 @@ export default createStore({
   actions: {
     login(context, payload) {
       context.commit('loginAttempt');
-      userService.login(payload.user, payload.password, payload.cb);
+      userService.login(payload.email, payload.password, payload.cb);
     },
     register(context, payload) {
       context.commit('registerAttempts');
 
       // Payload properties spread
-      userService.register(...Object.values(payload));
+      userService.register(...Object.values(payload), payload.cb);
     },
   },
 });

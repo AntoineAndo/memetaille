@@ -7,22 +7,26 @@ var bcrypt = require('bcrypt');
 var UserSchema = new Schema(
 {
     _someId		: Schema.Types.ObjectId,
-    email		: { type: String, unique: true, required: true },
-    password	: { type: String, required: true },
+    email		: { type: String, unique: true, required: false },
+    password	: { type: String, required: false },
     username	: { type: String, unique: false },
     active		: { type: Boolean, default: true },
-    height		: { type: Number, min: 54, max: 272, required: true },
+    height		: { type: Number, min: 54, max: 272, required: false },
+    facebookID	: { type: String, unique: true, required: false },
+    new			: { type: Boolean, default: true },
     updated_on	: { type: Date, default: Date.now() },
-})
+});
 
 //Pre-hook: called before the User is saved in DB
 UserSchema.pre(
 	'save',
 	async function(next) {
-		const user = this; // Refers to the document about to be saved
-		const hash = await bcrypt.hash(this.password, 10);
+		if(this.password){
+			const user = this; // Refers to the document about to be saved
+			const hash = await bcrypt.hash(this.password, 10);
 
-		this.password = hash;
+			this.password = hash;
+		}
 		next();
 	});
 
@@ -32,7 +36,6 @@ UserSchema.methods.isValidPassword = async function(password) {
 
 	return compare;
 }
-
 
 /*
 //Passport capabilities is pluged in the UserSchema

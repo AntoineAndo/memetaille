@@ -1,4 +1,5 @@
 const passport = require('passport');
+const facebookStrategy = require('passport-facebook').Strategy;
 const localStrategy = require('passport-local').Strategy;
 const UserModel = require('../db/models/users');
 
@@ -73,3 +74,19 @@ passport.use(
     }
   )
 );
+
+/*
+passport.use(
+  new facebookStrategy({
+    clientID: '242011321231099',
+    clientSecret: 'a98d0d69a9812ec7b5cb0c12a4bf737c',
+    callbackURL: 'http://localhost:3000/auth/fb/callback',
+  },
+  function(accessToken, refreshToken, profile, done) {
+    console.log(profile);
+    console.log("^ profile");
+    //UserModel.findOrCreate()
+
+    done(null, 'test');
+  }))
+*/
