@@ -7,8 +7,6 @@ function loginSession(user) {
 }
 
 function handleResponse(response) {
-  console.log('RESPONSE');
-  console.log(response);
   return response.text().then((text) => {
     const data = text && JSON.parse(text);
     if (!response.ok) {
@@ -32,6 +30,7 @@ function login(email, password, cb) {
     body: JSON.stringify({ email, password }),
   };
 
+  // Sends credentials to the API to authenticate the user and get the JWT
   fetch(`${process.env.VUE_APP_API_URL}/auth/login`, requestOptions)
     .then(handleResponse)
     .then((user) => {
@@ -55,6 +54,8 @@ function register(email, password, username, height, cb) {
     }),
   };
 
+  // Sends the register form data to the API to register a user
+  // TODO: must log the user in and get the JWT
   fetch(`${process.env.VUE_APP_API_URL}/auth/register`, requestOptions)
     .then(handleResponse)
     .then((data) => {
@@ -69,6 +70,8 @@ function register(email, password, username, height, cb) {
     });
 }
 
+// Used to get the current user
+// JWT needed
 function getUser(user, token, cb) {
   let options;
   if (token) {
@@ -86,7 +89,7 @@ function getUser(user, token, cb) {
     headers: options,
   };
 
-  return fetch(`${process.env.VUE_APP_API_URL}/users/${user}`, requestOptions)
+  fetch(`${process.env.VUE_APP_API_URL}/users/${user}`, requestOptions)
     .then(handleResponse)
     .then((data) => {
       console.log(data);

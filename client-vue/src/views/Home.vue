@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
     <div class="users">
       <div v-if="loadin">
         Loading
@@ -30,6 +29,8 @@ export default {
     $route: 'fetchData',
   },
   created() {
+    console.log('this.$parent');
+    console.log(this.$parent);
     // fetch the data when the view is created and the data is
     // already being observed
     this.fetchUsers();

@@ -4,13 +4,21 @@
     <router-link v-if="isConnected == false" to="/login">Login</router-link>
     <router-link v-if="isConnected" :to="'/users/'+userID">Profile</router-link>
   </div>
-  <router-view/>
+  <router-view v-slot="{ Component }">
+    <component ref="view" :is="Component" />
+  </router-view>
 </template>
 <script>
+import Home from './views/Home.vue';
+
 export default {
   name: 'App',
+  components: {
+    home: Home,
+  },
   data() {
     return {
+      title: 'Memetaille.com',
       userID: '',
     };
   },
