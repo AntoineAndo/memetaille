@@ -41,13 +41,11 @@ passport.use(
     async (req, email, password, done) => {
       try {
         const user = await UserModel.findOne({ email });
-        console.log(user);
         if (!user) {
           return done(null, false, { message: 'User not found' });
         }
 
         const validate = await user.isValidPassword(password);
-
         if (!validate) {
           return done(null, false, { message: 'Wrong Password' });
         }
