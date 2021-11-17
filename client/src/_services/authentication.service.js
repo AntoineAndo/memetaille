@@ -1,6 +1,13 @@
 // import config from 'config';
+import { createContext, useContext, useState, useReducer } from 'react'
 
-function handleResponse(response) {
+const authContext = createContext();
+
+function useAuth() {
+  return useContext(authContext);
+}
+
+function _handleResponse(response) {
     return response.text().then((text) => {
       const data = text && JSON.parse(text);
       if (!response.ok) {
@@ -17,29 +24,61 @@ function handleResponse(response) {
     });
   }
 
-function login(email, password, done){
+const userReducer = (state, data)=>{
+  localStorage.setItem('user',JSON.stringify(data));
+  return data;
+}
+
+const tokenReducer = (state, data)=>{
+  localStorage.setItem('token', data);
+  return data;
+}
+
+function useProvideAuth() {
+  const initialUserValue = (localStorage.getItem('user') != null) ? JSON.parse(localStorage.getItem('user')) : {}
+  const initialTokenValue = (localStorage.getItem('token') != null) ? localStorage.getItem('token') : ""
+  const [loggedUser, setLoggedUser] = useReducer(userReducer, initialUserValue);
+  const [token, setToken] = useReducer(tokenReducer, initialTokenValue);
+
+  const login = (email, password, done)=>{
     const requestOptions = {
         method: "POST",
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({email, password}),
     }
 
-    console.log('LOGIN')
-
     fetch(`http://localhost:3000/auth/login`, requestOptions)
-        .then(handleResponse)
+        .then(_handleResponse)
         .then(data => {
-          console.log(data)
             if(!data.user){
                 done({
                   message:'Incorrect Email or Password'
                 }, null);
             }else{
+              /*
               localStorage.setItem('user', JSON.stringify(data.user));
               localStorage.setItem('token', data.token);
+              */
+              setToken(data.token)
+              setLoggedUser(data.user);
+
               done(null,data.user);
             }
         })
+  }  
+
+  const signout = () => {
+    setLoggedUser(false);
+    setToken("");
+  }
+
+  return {
+    loggedUser,
+    token,
+    login,
+    signout
+  }
+
 }
 
-export default {login}
+export default useProvideAuth

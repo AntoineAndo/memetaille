@@ -1,8 +1,8 @@
-import React from 'react'
-import { useState, useReducer } from 'react'
+import React, { useState, useReducer } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { formContainer } from  './LoginForm.module.scss';
 
-import Auth from '../../_services/authentication.service';
+import { useAuth } from '../../providers/ProvideAuth';
 
 const formReducer = (state, event) => {
     return {
@@ -11,16 +11,22 @@ const formReducer = (state, event) => {
     }
 }
 
+
 function LoginForm() {
 
+    //Context and hooks
+    const auth = useAuth();
+    const navigate = useNavigate();
     const [formData, setFormData] = useReducer(formReducer, {});
     const [formError, setFormError] = useState("");
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        Auth.login(formData.email, formData.password, (err, user)=>{
+        auth.login(formData.email, formData.password, (err, user)=>{
             if(err) setFormError(err.message);
             else if(err == null && user) {
                 setFormError('');
+                navigate('/');
             }
 
         });
