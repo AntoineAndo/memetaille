@@ -1,14 +1,17 @@
-import { content } from './Home.module.scss'
+import { dashboard, messages } from './Home.module.scss'
+import Header from '../Header/Header'
 
 
-import UserList from '../UserList/UserList';
+import Sidebar from '../Sidebar/Sidebar';
 
 function Home() {
 
     return (
-        <div className={content}>
-            <UserList />
-        </div>
+        <section className={ dashboard }>
+            <Header/>
+            <Sidebar />
+            <div className={messages} ></div>
+        </section>
     )
 }
 

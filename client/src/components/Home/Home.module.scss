@@ -1,8 +1,19 @@
-.content {
-    border: solid orange 2px;
+.dashboard {
+    height: 100vh;
+    min-height: 0;
+    max-height:100vh;
+    display: grid;
+    grid-template-columns: minmax(200px, 2fr) 7fr;
+    grid-template-rows: 60px 9fr;
+    font-family: 'Space Mono', monospace;
+    overflow: hidden;
 
-    grid-column-start: 1;
-    grid-column-end: 3;
-    grid-row-start: 2;
-    grid-row-end: 2;
+    .messages {
+        min-height: 0;
+        grid-column-start: 2;
+        grid-column-end: 3;
+        grid-row-start: 2;
+        grid-row-end: 3;
+    }
+
 }

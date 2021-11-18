@@ -20,7 +20,6 @@ function App() {
         <Routes>
           <Route exact path="/" element={
             <RequireAuth redirectTo="/login">
-              <Header/>
               <Home />
             </RequireAuth>
           }/>

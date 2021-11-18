@@ -1,4 +1,4 @@
-import { header, userContainer, infoContainer, userName, userHeight } from './Header.module.scss';
+import { action } from './Header.module.scss';
 import { useAuth } from '../../providers/ProvideAuth';
 
 const Header = ({title}) => {
@@ -7,15 +7,13 @@ const Header = ({title}) => {
     console.log(auth)
 
     return (
-        <header className={header}>
-            <div className={userContainer}>
-                <img src="" alt="" />
-                <div className={infoContainer}>
-                    <span className={userName}>{auth.loggedUser.username}</span>
-                    <span className={userHeight}>{auth.loggedUser.username}</span>
+        <header>
+            <h1>Memetaille.com</h1>
+            <div className={action}>
+                <div className="logout">
+                    <p>Supprimer mon compte</p>
                 </div>
             </div>
-            <h1>{title}</h1>
         </header>
     )
 }

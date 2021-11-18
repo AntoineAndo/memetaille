@@ -1,41 +1,12 @@
-.header {
+header {
+    border: solid 1px black;
     grid-column-start: 1;
     grid-column-end: 3;
     grid-row-start: 1;
-    grid-row-end: 1;
-    padding: 10px 20px;
-    border-bottom: solid 1px black;
+    grid-row-end: 2;
 
-    .userContainer {
-        border: solid 1px black;
-        display: flex;
-        
-        img {
-            width: 40px;
-            height: 40px;
-            border: solid red 1px;
-            border-radius: 20px;
-        }
-
-        .infoContainer{
-            border: solid 1px green;
-            display: flex;
-            flex-direction: column;
-
-            .userName{
-                font-weight: bold;
-            }
-
-            .userHeight {
-                color: grey;
-            }
-        
-        }
-
-    }
-
-    h1{
-        color: red;
-        margin-left: auto;
-    }
+    display: flex;
+    padding: 5px 20px;
+    justify-content: space-between;
+    align-items: center;
 }
