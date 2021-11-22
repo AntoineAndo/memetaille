@@ -24,17 +24,35 @@ var server = http.createServer(app);
 
 
 //Create Socket.io Server
-var io = require('socket.io')(server);
-
-io.on('connection', socket => {
-  socket.emit('request', () => {
-    console.log("request")
-  }); 
-  socket.on('reply',  () => {
-    console.log("reply")
-  }); // listen to the event
+var io = require('socket.io')(server,{
+  cors: {
+    origin: "http://localhost:3001",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Authorization"],
+    credentials: true,
+  }
 });
 
+io.use((socket, next) => {
+  const username = socket.handshake.auth.username;
+  if (!username) {
+    return next(new Error("invalid username"));
+  }
+  socket.username = username;
+  next();
+});
+
+io.on('connection', socket => {
+
+  console.log("Client connected")
+  console.log(socket.client.id)
+  socket.emit('connection_confirmed', "Socket.io connection established with the server"); 
+  socket.on('disconnect', ()=>{
+    console.log('Client disconnected')
+  })
+});
+
+  
 /**
  * Listen on provided port, on all network interfaces.
  */

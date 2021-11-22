@@ -25,6 +25,7 @@ function _handleResponse(response) {
   }
 
 const userReducer = (state, data)=>{
+  console.log(data);
   localStorage.setItem('user',JSON.stringify(data));
   return data;
 }
@@ -67,6 +68,10 @@ function useProvideAuth() {
         })
   }  
 
+  const updateLoggedUser = (user) => {
+    setLoggedUser(user);
+  }
+
   const signout = () => {
     setLoggedUser(false);
     setToken("");
@@ -75,6 +80,7 @@ function useProvideAuth() {
   return {
     loggedUser,
     token,
+    updateLoggedUser,
     login,
     signout
   }

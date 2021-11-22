@@ -15,7 +15,6 @@ router.get('/', async function(req, res, next){
 			});
 		}
 
-		console.log(user);
 		const users = await UserModel.find({height: user._doc.height}, {password:0, updated_on:0, active:0});
 
 		res.status(200).send(users);
@@ -34,5 +33,17 @@ router.get('/:id', function(req, res, next){
 
 	})(req, res, next);
 });
+
+router.post('/:id', function(req, res, next){
+	passport.authenticate('jwt', {session: false}, function(err, user, info){
+		if(!user){
+			return res.status(401).json({
+				'message': 'Token expired'
+			});
+		}
+		//res.status(200).send(user);
+		next();
+	})(req, res, next);
+}, userController.update_user);
 
 module.exports = router;

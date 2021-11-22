@@ -19,31 +19,62 @@ function _handleResponse(response) {
     });
 }
 
-function getUsers(auth, cb) {
-    const requestOptions = {
-        method: "GET",
-        headers: {
-            'Content-Type':'application/json',
-            'Authorization': `Bearer ${auth.token}`,
+function useUserService(){
+    const auth = useAuth();
+
+    const getUsers = (cb) => {
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                'Content-Type':'application/json',
+                'Authorization': `Bearer ${auth.token}`
+            }
         }
+    
+        fetch(`http://localhost:3000/users/`, requestOptions)
+            .then(_handleResponse)
+            .then(data => {
+                cb(data)
+            }).catch(error =>{
+                console.error(error)
+                if(error == "Token expired"){
+                    auth.signout();
+                    window.location = "/login";
+                }
+            });
+    
     }
 
-    fetch(`http://localhost:3000/users/`, requestOptions)
-        .then(_handleResponse)
-        .then(data => {
-            cb(data)
-        }).catch(error =>{
-            console.error(error)
-            if(error == "Token expired"){
-                auth.signout();
-                window.location = "/login";
-            }
-        });
 
+    const updateUser = (id, formData, cb) => {
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                'Content-Type':'application/json',
+                'Authorization': `Bearer ${auth.token}`,
+            },
+            body: JSON.stringify(formData),
+        }
+
+        fetch(`http://localhost:3000/users/${id}`, requestOptions)
+            .then(_handleResponse)
+            .then(data => {
+                cb(data);
+            }).catch(error =>{
+                console.error(error)
+                if(error == "Token expired"){
+                    auth.signout();
+                    window.location = "/login";
+                }
+            });
+            
+    }
+
+    return {
+        getUsers,
+        updateUser
+    }
+    
 }
 
-
-
-export {
-    getUsers
-}
+export default useUserService;

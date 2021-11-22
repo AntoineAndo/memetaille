@@ -5,6 +5,8 @@ var passport = require('passport');
 var request = require('request');
 
 
+
+
 exports.user_get = async function(req, res){
 	const users = await UserModel.find({username: req.params.username})
 
@@ -96,4 +98,28 @@ exports.user_profile_secured = function(req, res, next){
 		}
 		res.status(200).send("ok");
 	});
+}
+
+exports.update_user = function(req, res){
+
+	//Extract the user id from the JWT in auth header
+	var decodedID = jwt.decode(req.headers.authorization.split(" ")[1], 'tonkotsu')._doc._id;
+
+	if(decodedID != req.params.id){
+		return res.status(401).send({"message": 'Unauthorized'})
+	}
+
+	UserModel.updateOne({_id: req.params.id}, req.body, (err, result)=>{
+
+		if(err || (result.matchedCount == 1 && result.modifiedCount == 0)){
+			return res.status(500).send({"ok":false, "message": JSON.stringify(err)});
+		}
+
+		if(result.matchedCount == 0){
+			return res.status(404).send({"ok": false, "message":'User not found'});
+		}
+		if(result.modifiedCount == 1){
+			return res.status(200).send({"ok":true, "message":'User updated'});
+		}
+	})
 }

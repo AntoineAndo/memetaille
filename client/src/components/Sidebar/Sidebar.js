@@ -1,19 +1,22 @@
 import React from 'react'
 
-import { sidebar, userDetail, userList, userListEntry, userContainer } from './Sidebar.module.scss';
+import { sidebar, userDetail, userList, userListEntry, fixedUser } from './Sidebar.module.scss';
 import UserListEntry from '../UserListEntry/UserListEntry';
 import { useEffect, useState } from 'react'
 import { useAuth } from '../../providers/ProvideAuth';
-import { getUsers } from '../../_services/user.service'
+import UseUserService from '../../_services/user.service'
 
-function UserList() {
-        
+import ProfilePopup from '../ProfilePopup/ProfilePopup';
+
+function Sidebar({openConversation}) {
     const auth = useAuth();
     const [users, setUsers] = useState([]);
+    const userService = UseUserService();
+    
 
     useEffect(() => {
         if(users.length == 0){
-            getUsers(auth, (users)=>{
+            userService.getUsers((users)=>{
                 setUsers(users)
             })
         }
@@ -21,19 +24,20 @@ function UserList() {
 
     return (
         <div className={ sidebar }>
-            <div className={ userContainer }>
-                <div className={ userDetail }>
-                    <p className="username">Meramon<span>211cm</span></p>
-                    <p className="status">Cherche des femmes chaudes à ma taille</p>
-                </div>
+            <div className={ fixedUser }>
+                <UserListEntry user={auth.loggedUser} openConversation={openConversation} edit="true"/>
             </div>
             <ul className={ userList }>
-                {users.map((user)=>{
-                    return <><UserListEntry key={user._id} user={user}/><UserListEntry key={user._id} user={user}/><UserListEntry key={user._id} user={user}/><UserListEntry key={user._id} user={user}/><UserListEntry key={user._id} user={user}/><UserListEntry key={user._id} user={user}/><UserListEntry key={user._id} user={user}/><UserListEntry key={user._id} user={user}/><UserListEntry key={user._id} user={user}/><UserListEntry key={user._id} user={user}/><UserListEntry key={user._id} user={user}/><UserListEntry key={user._id} user={user}/><UserListEntry key={user._id} user={user}/><UserListEntry key={user._id} user={user}/><UserListEntry key={user._id} user={user}/><UserListEntry key={user._id} user={user}/></>
+                {users.map((user, nb)=>{
+                    return <>
+                    <li key={user._id}>
+                        <UserListEntry user={user} openConversation={openConversation} edit="false"/>
+                    </li>
+                    </>
                 })}
             </ul>
         </div>
     )
 }
 
-export default UserList
+export default Sidebar

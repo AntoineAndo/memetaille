@@ -12,6 +12,7 @@ var UserSchema = new Schema(
     username	: { type: String, unique: false },
     active		: { type: Boolean, default: true },
     height		: { type: Number, min: 54, max: 272, required: false },
+    status		: { type: String, required: false },
     facebookID	: { type: String, unique: true, required: false },
     new			: { type: Boolean, default: true },
     updated_on	: { type: Date, default: Date.now() },
