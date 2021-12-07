@@ -2,7 +2,7 @@ import { useContext, createContext } from 'react'
 
 import useProvideAuth from '../_services/authentication.service'
 
-const authContext = createContext("default value");
+const authContext = createContext();
 
 export function ProvideAuth({ children }) {
     const auth = useProvideAuth();

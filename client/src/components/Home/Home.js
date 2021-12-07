@@ -1,38 +1,78 @@
-import { dashboard, messages } from './Home.module.scss'
-import { useState, useReducer } from 'react' 
+import { dashboard } from './Home.module.scss'
+import { useEffect, useRef, useState } from 'react' 
 import Header from '../Header/Header'
 import MessagePanel from '../MessagePanel/MessagePanel'
+import socketIOClient from 'socket.io-client'
 
+import { useAuth } from '../../providers/ProvideAuth';
+import { useUserList } from '../../providers/UserListContext';
+import { ConversationContext } from '../../providers/ConversationContext'
+
+import _ from 'lodash'
 
 import Sidebar from '../Sidebar/Sidebar';
 
+const socket = socketIOClient('http://localhost:3000', {autoConnect: false});
 
-const conversationReducer = (state, data) => {
-    let newValue;
-    if(data.action == "add"){
-        newValue = [...state, data.user];
-    }
-    return newValue;
-}
-
-function useForceUpdate(){
-    const [value, setValue] = useState(0); // integer state
-    return () => setValue(value => value + 1); // update the state to force render
-}
 
 function Home() {
-    let [ conversationList, setConversationList ] = useReducer(conversationReducer, []);
-    let [ update, setUpdate ] = useState(false);
+    let auth = useAuth();
+    const messageRef = useRef();
+    const { userList, setUserList } = useUserList();
+    
 
-    const openConversation = (user, edit)=>{
-        setConversationList({user, action:'add'});
+
+    const handleNewMessage = (data) => {
+        //Get the user data associated with the sender's socketID
+        let localUserList = [...userList];
+        const sender = _.find(localUserList, {socketID: data.from});
+
+        if(sender.messages == undefined){
+            sender.messages = [];
+        }
+        sender.messages.push({...data, sentByMe: false});
+        //sender.username = 'Test message';
+        sender.newMessage = true;
+        setUserList(localUserList)
     }
+
+    useEffect(() => {
+        socket.auth = {
+            user: JSON.stringify(auth.loggedUser)
+        }
+        socket.connect();
+        socket.on("connection_confirmed", message => {
+            console.log("Connection confirmed");
+            auth.setSocketId(message.ownId)
+        });
+
+        socket.on("message", (data)=>{
+            console.log("new message");
+            handleNewMessage(data);
+        })
+
+        socket.on("connection_error", err=>{
+            console.log("connection error")
+        })
+
+        return () => {
+            socket.off('connect_error');
+            socket.off('message');
+            socket.off('connection_confirmed');
+        }
+    }, [userList]);
 
     return (
         <section className={ dashboard }>
             <Header/>
-            <Sidebar openConversation={openConversation}/>
-            <MessagePanel conversationList={ conversationList }/>
+            <ConversationContext>
+                <Sidebar
+                    socket={socket}/>
+                <MessagePanel 
+                    ref={ messageRef }
+                    socket={socket}
+                    auth={auth} />
+            </ConversationContext>
         </section>
     )
 }

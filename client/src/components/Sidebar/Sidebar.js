@@ -1,37 +1,42 @@
 import React from 'react'
 
-import { sidebar, userDetail, userList, userListEntry, fixedUser } from './Sidebar.module.scss';
+import { sidebar, fixedUser } from './Sidebar.module.scss';
 import UserListEntry from '../UserListEntry/UserListEntry';
-import { useEffect, useState } from 'react'
 import { useAuth } from '../../providers/ProvideAuth';
-import UseUserService from '../../_services/user.service'
 
-import ProfilePopup from '../ProfilePopup/ProfilePopup';
+import { useUserList } from '../../providers/UserListContext';
 
-function Sidebar({openConversation}) {
+import { useConversationContext } from '../../providers/ConversationContext';
+import _ from 'lodash'
+
+function Sidebar({socket}) {
     const auth = useAuth();
-    const [users, setUsers] = useState([]);
-    const userService = UseUserService();
-    
+    const { userList, setUserList } = useUserList();
+    const { checkAndSetActiveConversation } = useConversationContext();
 
-    useEffect(() => {
-        if(users.length == 0){
-            userService.getUsers((users)=>{
-                setUsers(users)
-            })
-        }
-    });
+    let users = userList;
+    
+    socket.on('user_list', users=>{
+
+        //Exclude self
+        _.remove(users, function(n) {
+            return n._id == auth.loggedUser._id;
+        });
+
+        //setUsers(users)
+        setUserList(users);
+    })
 
     return (
         <div className={ sidebar }>
             <div className={ fixedUser }>
-                <UserListEntry user={auth.loggedUser} openConversation={openConversation} edit="true"/>
+                <UserListEntry user={auth.loggedUser} openTab={()=>{}} edit="true"/>
             </div>
             <ul className={ userList }>
                 {users.map((user, nb)=>{
                     return <>
                     <li key={user._id}>
-                        <UserListEntry user={user} openConversation={openConversation} edit="false"/>
+                        <UserListEntry user={user} openTab={()=>{checkAndSetActiveConversation(user.socketID)}} edit="false"/>
                     </li>
                     </>
                 })}

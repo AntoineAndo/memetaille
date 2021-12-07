@@ -1,47 +1,56 @@
-import { useState, useEffect } from 'react'
-import socketIOClient from 'socket.io-client'
-
+import { main, tabsContent } from './MessagePanel.module.scss'
 import Conversation from '../Conversation/Conversation'
+import _ from 'lodash'
+import TabHeader from '../TabHeader/TabHeader'
 
-function MessagePanel({conversationList}) {
-    const [response, setResponse] = useState();
+import { useConversationContext } from '../../providers/ConversationContext';
 
-    useEffect(()=>{
-        console.log("conv updated")
-        console.log(conversationList)
-    })
+function MessagePanel({socket, auth}) {
+
+    //const [ activeConversation, setActiveConversation ] = useState();
+    const { activeConversation, setActiveConversation,
+            openConversations, setOpenConversations } = useConversationContext()
+
+    const openTab = (socketID)=>{
+        if(openConversations.indexOf(socketID)  < 0){
+            console.log('Opening new conversation with ID: ' + socketID)
+            setOpenConversations({socketID, action: 'add'});
+        }
+        //setActiveTab(socketID);
+    }
+
+    const closeTab = (e, convIdToClose, index)=>{
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+        setActiveConversation({convIdToClose, action: 'remove'})
+
+        if(convIdToClose == activeConversation.socketID){
+            let newIndex = (index > 0) ? parseInt(index)-1 : 0
+            //setActiveTab(openConversations[newIndex])
+        }
+    }
     
-    /*
-    useEffect(() => {
-        const socket = socketIOClient('http://localhost:3000', {autoConnect: false});
-        socket.auth = {
-            username: "PAUL"
-        }
-        socket.connect();
-        socket.on("connection_confirmed", message => {
-            console.log(message)
-            setResponse(message);
-        });
-
-        socket.on("connection_error", err=>{
-            console.log("connection error")
-        })
-
-        return () => {
-            socket.off("connect_error");
-        }
-    }, []);
-    */
+    const updateUserList = ()=>{
+        //setUserList()
+    }
 
     return (
-        <div>
-            <h3>MessagePanel</h3>
-            <div>
-                {conversationList.map((conversationUser, nb)=>{
-                    return <>
-                        <Conversation user={conversationUser} key={conversationUser}/>
-                    </>
-                })}
+        <div className={main}>
+            <TabHeader
+                openConversations={openConversations}
+                activeTab={activeConversation?.socketID}
+                openTab={openTab}
+                closeTab={closeTab}/>
+
+            <div className={tabsContent}>
+                {activeConversation != undefined && 
+                    <Conversation
+                        user={activeConversation}
+                        auth={auth}
+                        key={activeConversation.socketID}
+                        socket={socket}
+                        updateUserList={updateUserList}/>
+                }
             </div>
         </div>
     )

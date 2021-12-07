@@ -1,24 +1,16 @@
-import { useState } from 'react'
-import { useAuth } from '../../providers/ProvideAuth';
 import { userDetail } from './UserListEntry.module.scss'
 
-import ProfilePopup from '../ProfilePopup/ProfilePopup'
 
-
-function UserListEntry({user, edit, openConversation}) {
+function UserListEntry({user, edit, openTab}) {
     
-    const auth = useAuth();
-    const [open, setOpen] = useState(false);
-    const openModal = () => setOpen(true);
-    const closeModal = () => setOpen(false);
 
-    const localOpenConversation = (e) => {
-        openConversation(user, edit)
+    const _openConversation = (e) => {
+        openTab(user.socketID, edit)
     }
 
     return (
         <>
-            <div className={ userDetail } onClick={localOpenConversation}>
+            <div className={ userDetail } onClick={_openConversation}>
                 <p className="username">{user.username}<span>{user.height}cm</span></p>
                 <p className="status">{user.status}</p>
             </div>

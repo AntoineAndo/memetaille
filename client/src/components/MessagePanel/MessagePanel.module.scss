@@ -1,0 +1,14 @@
+.main {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 3;
+
+    //Magic system
+    min-height: 0;
+
+    .tabsContent {
+        height: calc(100% - 30px);
+    }
+}
+

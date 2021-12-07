@@ -4,7 +4,7 @@ import { useAuth } from '../../providers/ProvideAuth';
 const Header = ({title}) => {
 
     const auth = useAuth();
-    console.log(auth)
+    // console.log(auth)
 
     return (
         <header>

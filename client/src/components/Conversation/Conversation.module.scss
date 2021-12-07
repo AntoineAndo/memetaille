@@ -1,0 +1,43 @@
+.conversation {
+    height: 100%;
+    display: block;
+    
+    .messagesContainer {
+        height: 80%;
+        overflow-y: auto;
+
+        ul {
+            text-decoration: none;
+            li {
+                margin: 5px;
+                overflow: auto;
+
+                &.sentByMe p{
+                    background-color: green;
+                    color: white;
+                    float: right;
+                    
+                }
+
+                p {
+                    border: solid 1px black;
+                    border-radius: 5px;
+                    width: fit-content;
+                    max-width: 40%;
+                    padding: 0px 5px;
+                }
+
+                &:last-child {
+                    margin-bottom: 100px;
+                }
+            }
+        }
+    }
+
+    .inputContainer {
+        margin-top: auto;
+        border-top: solid 1px black;
+        height: 20%;
+    }
+    
+}

@@ -120,9 +120,26 @@
                 </li>
             </ul>
         </div>
-        <div class="messages">
-    
-  <input type="range" min="1" max="3" steps="1" value="2">
+        <div class="tabs">
+            <ul>
+                <li><a href="#1">Conversation 1</a></li>
+                <li class="active"><a href="#2">Conversation 2</a></li>
+                <li><a href="#3">Conversation 3</a></li>
+                <li><a href="#4">Conversation 4</a></li>
+                <li><a href="#5">Conversation 5</a></li>
+            </ul>
+            <div class="conversation" id="#1">1</div>
+            <div class="conversation active" id="#2">
+                <div class="messages">
+
+                </div>
+                <div class="inputContainer">
+                    <input type="text"><button>Send</button>
+                </div>
+            </div>
+            <div class="conversation" id="#3">3</div>
+            <div class="conversation" id="#4">4</div>
+            <div class="conversation" id="#5">5</div>
         </div>
     </section>
 </body>

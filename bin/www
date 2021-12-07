@@ -21,7 +21,10 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
-
+var { InMemorySessionStore } = require('../stores/sessionStore')
+var { InMemoryMessageStore } = require('../stores/messageStore')
+const messageStore = new InMemoryMessageStore();
+const sessionStore = new InMemorySessionStore();
 
 //Create Socket.io Server
 var io = require('socket.io')(server,{
@@ -33,26 +36,73 @@ var io = require('socket.io')(server,{
   }
 });
 
+
+
 io.use((socket, next) => {
-  const username = socket.handshake.auth.username;
-  if (!username) {
-    return next(new Error("invalid username"));
+  const user = JSON.parse(socket.handshake.auth.user);
+  //find existing session
+  sessionStore.associateUserIDsocketID(user._id, socket.id);
+
+  if (!user) {
+    return next(new Error("invalid user"));
   }
-  socket.username = username;
+  socket.user = user;
   next();
 });
 
 io.on('connection', socket => {
 
   console.log("Client connected")
-  console.log(socket.client.id)
-  socket.emit('connection_confirmed', "Socket.io connection established with the server"); 
+  const ownSocketId = socket.id;
+  const room = socket.user.height;
+
+  socket.join(room)
+  socket.emit('connection_confirmed', {
+    ownSocketId,
+    sessionID: socket.sessionID
+  });
+  console.log(io.sockets.adapter.rooms.get(room).size + " users in room " + room)
+
+  let users = getConnectedClientsInRoomExceptSelf(io, room, ownSocketId);
+
+  io.in(room).emit("user_list", users);
+
+  socket.on('message', ({from, to, message})=>{
+    console.log("Server received a message");
+    messageStore.saveMessage({ from: socket.user._id, to, message });
+
+    const recipientSocketId = sessionStore.findSocketIdBy_id(to)
+
+    io.to(recipientSocketId).emit("message", {
+      message,
+      from: ownSocketId
+    })
+  })
+
   socket.on('disconnect', ()=>{
     console.log('Client disconnected')
-  })
+    users = getConnectedClientsInRoomExceptSelf(io, room, ownSocketId)
+    io.in(room).emit("user_list", users);
+  });
 });
 
   
+
+function getConnectedClientsInRoomExceptSelf(io, roomNb, ownSocketId){
+  const users = [];
+  const clients = io.sockets.adapter.rooms.get(roomNb)
+  for (let [id, socket] of io.of("/").sockets) {
+    if(socket.user.height == roomNb){
+      users.push({
+          ...socket.user,
+          socketID: id
+      });
+    }
+  }
+  return users;
+}
+
+
 /**
  * Listen on provided port, on all network interfaces.
  */

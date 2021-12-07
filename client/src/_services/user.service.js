@@ -1,7 +1,8 @@
 // import config from 'config';
-import { createContext, useContext, useReducer } from 'react'
+import { useState, useContext, createContext } from 'react'
 import { useAuth } from '../providers/ProvideAuth';
 
+/*
 function _handleResponse(response) {
     return response.text().then((text) => {
       const data = text && JSON.parse(text);
@@ -17,10 +18,23 @@ function _handleResponse(response) {
       }
       return data;
     });
-}
+}*/
+
+
+const userContext = createContext();
+
+function useUser() {
+    return useContext(userContext);
+  }
 
 function useUserService(){
-    const auth = useAuth();
+    // const auth = useAuth();
+    const [userList, _setUserList] = useState([]);
+    const setUserList = (data)=>{
+        _setUserList(data);
+    }
+
+    /*
 
     const getUsers = (cb) => {
         const requestOptions = {
@@ -69,10 +83,11 @@ function useUserService(){
             });
             
     }
+    */
 
     return {
-        getUsers,
-        updateUser
+        userList,
+        setUserList
     }
     
 }

@@ -40,6 +40,8 @@ function useProvideAuth() {
   const initialTokenValue = (localStorage.getItem('token') != null) ? localStorage.getItem('token') : ""
   const [loggedUser, setLoggedUser] = useReducer(userReducer, initialUserValue);
   const [token, setToken] = useReducer(tokenReducer, initialTokenValue);
+  const [userList, _setUserList] = useState([]);
+  const [socketId, setSocketId] = useState("");
 
   const login = (email, password, done)=>{
     const requestOptions = {
@@ -72,6 +74,10 @@ function useProvideAuth() {
     setLoggedUser(user);
   }
 
+  const setUserList = (userList) => {
+    _setUserList(userList);
+  }
+
   const signout = () => {
     setLoggedUser(false);
     setToken("");
@@ -80,7 +86,10 @@ function useProvideAuth() {
   return {
     loggedUser,
     token,
+    setSocketId,
     updateLoggedUser,
+    userList, 
+    setUserList,
     login,
     signout
   }

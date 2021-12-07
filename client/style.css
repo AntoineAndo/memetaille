@@ -48,14 +48,6 @@ header {
     /*max-height: 100vh;*/
 }
 
-.messages {
-    min-height: 0;
-    grid-column-start: 2;
-    grid-column-end: 3;
-    grid-row-start: 2;
-    grid-row-end: 3;
-}
-
 .userContainer {
     display: flex;
     margin-left: auto;
@@ -85,3 +77,61 @@ img {
 .status {
     font-size: 0.8em;
 }
+
+
+.tabs {
+    min-height: 0;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 3;
+}
+
+.tabs ul {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    border-bottom: solid 1px black;
+
+}
+
+.tabs ul li {
+    border-right: solid 1px black;
+    padding: 5px 15px;
+    cursor: pointer;
+    margin-bottom: -1px;
+}
+
+.tabs li.active {
+    border-bottom: white solid 1px;
+}
+
+.tabs a {
+    text-decoration: none;
+    color: black;
+}
+
+.conversation {
+    background-color: lightgray;
+    height: 100%;
+
+}
+
+.conversation:not(.active) {
+    display: none;
+}
+
+.inputContainer {
+    margin-top: auto;
+    border-top: solid 1px black;
+    height: 20%;
+}
+
+.messages {
+    height: 80%;
+}
+
+
+
+
+
