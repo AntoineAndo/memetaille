@@ -7,7 +7,6 @@ import { useConversationContext } from '../../providers/ConversationContext';
 
 function MessagePanel({socket, auth}) {
 
-    //const [ activeConversation, setActiveConversation ] = useState();
     const { activeConversation, setActiveConversation,
             openConversations, setOpenConversations } = useConversationContext()
 
@@ -22,7 +21,7 @@ function MessagePanel({socket, auth}) {
     const closeTab = (e, convIdToClose, index)=>{
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
-        setActiveConversation({convIdToClose, action: 'remove'})
+        setOpenConversations({convIdToClose, action: 'remove'})
 
         if(convIdToClose == activeConversation.socketID){
             let newIndex = (index > 0) ? parseInt(index)-1 : 0
@@ -30,8 +29,20 @@ function MessagePanel({socket, auth}) {
         }
     }
     
-    const updateUserList = ()=>{
-        //setUserList()
+    const fetchConversation = (user)=>{
+        socket.emit('fetchConversation', user._id, (response)=>{
+            if(response.length > 0){
+                if(response.length == user.messages.length && 
+                    response[response.length-1].message == user.messages[user.messages.length-1].message){
+                        console.log("no new message")
+                        return;
+                }
+                const userWithNewMessage = {...user}
+                console.log(response)
+                userWithNewMessage.messages = response;
+                setActiveConversation(userWithNewMessage);
+            }
+        });
     }
 
     return (
@@ -49,7 +60,7 @@ function MessagePanel({socket, auth}) {
                         auth={auth}
                         key={activeConversation.socketID}
                         socket={socket}
-                        updateUserList={updateUserList}/>
+                        fetchConversation={fetchConversation}/>
                 }
             </div>
         </div>

@@ -1,12 +1,18 @@
 import { useState, useEffect, useRef } from 'react'
 import { conversation, messagesContainer, inputContainer, sentByMe } from './Conversation.module.scss'
 
-function Conversation({user, auth, socket, className, updateUserList}) {
+function Conversation({user, auth, socket, className, fetchConversation}) {
     const [input, setInput] = useState("")
     const endMessage = useRef(null);
 
+    
     if(user.messages == undefined)
-        user.messages = [];
+        user.messages = []
+
+    useEffect(()=>{
+        console.log(user)
+        fetchConversation(user);
+    }, [user])
 
     const onChangeInput = (e)=>{
         setInput(e.target.value)
@@ -19,11 +25,10 @@ function Conversation({user, auth, socket, className, updateUserList}) {
             from: auth.loggedUser._id,
             message: input
         }
-        
-        user.messages.push({...message, sentByMe:true})
-        updateUserList();
 
+        user.messages = [...user.messages, {...message}]
         socket.emit('message', message)
+
         setInput("");
     }
 
@@ -37,7 +42,7 @@ function Conversation({user, auth, socket, className, updateUserList}) {
                 <ul>
                     {user.messages.map((message, index)=>{
                         return <>
-                            <li className={(message.sentByMe == true) ? sentByMe : null}>
+                            <li className={(message.from == auth.loggedUser._id) ? sentByMe : null}>
                                 <p>
                                     {message.message}
                                 </p>

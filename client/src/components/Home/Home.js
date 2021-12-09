@@ -25,14 +25,13 @@ function Home() {
     const handleNewMessage = (data) => {
         //Get the user data associated with the sender's socketID
         let localUserList = [...userList];
-        const sender = _.find(localUserList, {socketID: data.from});
+        const sender = _.find(localUserList, {_id: data.from});
 
         if(sender.messages == undefined){
             sender.messages = [];
         }
-        sender.messages.push({...data, sentByMe: false});
-        //sender.username = 'Test message';
-        sender.newMessage = true;
+        sender.messages.push({...data});
+        console.log(localUserList);
         setUserList(localUserList)
     }
 

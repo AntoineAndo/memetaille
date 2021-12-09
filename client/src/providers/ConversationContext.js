@@ -9,9 +9,8 @@ const conversationReducer = (state, data) => {
         return [...state, data.idToOpen];
     }else if(data.action == "remove"){
         let newValue = [...state];
-        _.remove(newValue, function(n) {
-            return n == data.convIdToClose;
-        });
+        _.remove(newValue, n => (n == data.convIdToClose));
+        console.log(newValue);
         return newValue;
     }
 }

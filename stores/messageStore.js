@@ -11,13 +11,16 @@ class InMemoryMessageStore extends MessageStore {
 	}
 
 	saveMessage(message) {
-		console.log(message);
 		this.messages.push(message);
+		console.log(this.messages);
 	}
 
-	findMessagesForUser(userID) {
+	findConversationBetween(messageFrom, messageTo) {
 		return this.messages.filter(
-    		({ from, to }) => from === userID || to === userID
+    		({ from, to }) => {
+    			return (messageFrom == from && messageTo == to) || 
+    			(messageFrom == to && messageTo == from)
+    		}
     	);
 	}
 

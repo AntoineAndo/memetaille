@@ -68,15 +68,22 @@ io.on('connection', socket => {
   io.in(room).emit("user_list", users);
 
   socket.on('message', ({from, to, message})=>{
-    console.log("Server received a message");
+    
+    //Save message to store
     messageStore.saveMessage({ from: socket.user._id, to, message });
 
     const recipientSocketId = sessionStore.findSocketIdBy_id(to)
-
     io.to(recipientSocketId).emit("message", {
       message,
-      from: ownSocketId
+      from: socket.user._id,
+      to 
     })
+  })
+
+  socket.on('fetchConversation', (userId, callback)=>{
+    console.log("fetch "+userId);
+    const messages = messageStore.findConversationBetween(socket.user._id, userId);
+    callback(messages);
   })
 
   socket.on('disconnect', ()=>{
