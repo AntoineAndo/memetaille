@@ -12,7 +12,6 @@ class InMemoryMessageStore extends MessageStore {
 
 	saveMessage(message) {
 		this.messages.push(message);
-		console.log(this.messages);
 	}
 
 	findConversationBetween(messageFrom, messageTo) {

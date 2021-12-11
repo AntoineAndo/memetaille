@@ -4,10 +4,12 @@ import { createContext, useContext, useState } from 'react'
 const userListContext = createContext();
 
 export function UserListContext({ children }) {
-    const [userList, setUserList] = useState([])
+    const [connectedUsersList, setConnectedUsersList] = useState([])
+
+    console.log("__UserListContext render")
 
     return (
-        <userListContext.Provider value={{userList, setUserList}}>
+        <userListContext.Provider value={{connectedUsersList, setConnectedUsersList}}>
             {children}
         </userListContext.Provider>
     )

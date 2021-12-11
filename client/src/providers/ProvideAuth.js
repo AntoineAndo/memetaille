@@ -5,6 +5,9 @@ import useProvideAuth from '../_services/authentication.service'
 const authContext = createContext();
 
 export function ProvideAuth({ children }) {
+
+    console.log('_ProvideAuth render')
+
     const auth = useProvideAuth();
     return (
         <authContext.Provider value={auth}>

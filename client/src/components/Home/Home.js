@@ -1,5 +1,5 @@
 import { dashboard } from './Home.module.scss'
-import { useEffect, useRef, useState } from 'react' 
+import { useEffect, useRef } from 'react' 
 import Header from '../Header/Header'
 import MessagePanel from '../MessagePanel/MessagePanel'
 import socketIOClient from 'socket.io-client'
@@ -20,19 +20,20 @@ function Home() {
     const messageRef = useRef();
     const { userList, setUserList } = useUserList();
     
-
+    console.log("___Home render")
 
     const handleNewMessage = (data) => {
-        //Get the user data associated with the sender's socketID
-        let localUserList = [...userList];
-        const sender = _.find(localUserList, {_id: data.from});
+        //Get the user data associated with the sender's _id
+        console.log(userList)
+        let _userList = [...userList];
+        const sender = _.find(_userList, {_id: data.from});
 
         if(sender.messages == undefined){
             sender.messages = [];
         }
         sender.messages.push({...data});
-        console.log(localUserList);
-        setUserList(localUserList)
+        console.log(_userList);
+        setUserList(_userList)
     }
 
     useEffect(() => {
@@ -59,7 +60,7 @@ function Home() {
             socket.off('message');
             socket.off('connection_confirmed');
         }
-    }, [userList]);
+    }, []);
 
     return (
         <section className={ dashboard }>

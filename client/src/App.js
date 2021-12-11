@@ -5,7 +5,6 @@ import {
   Route,
 } from 'react-router-dom';
 
-import Header from './components/Header/Header';
 import LoginForm from './components/LoginForm/LoginForm';
 import Home from './components/Home/Home';
 import { ProvideAuth } from './providers/ProvideAuth';
@@ -16,6 +15,9 @@ import RequireAuth from './components/RequireAuth/RequireAuth';
 //PROTCH
 
 function App() {
+
+  console.log("===APP RENDER===")
+
   return (
     <ProvideAuth>
       <div className="App">

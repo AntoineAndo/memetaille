@@ -1,18 +1,16 @@
 import { useState, useEffect, useRef } from 'react'
 import { conversation, messagesContainer, inputContainer, sentByMe } from './Conversation.module.scss'
 
-function Conversation({user, auth, socket, className, fetchConversation}) {
+function Conversation({activeConversation, auth, socket, className, fetchConversation}) {
     const [input, setInput] = useState("")
     const endMessage = useRef(null);
 
-    
-    if(user.messages == undefined)
-        user.messages = []
+    if(activeConversation.messages == undefined)
+        activeConversation.messages = []
 
     useEffect(()=>{
-        console.log(user)
-        fetchConversation(user);
-    }, [user])
+        fetchConversation(activeConversation);
+    }, [activeConversation])
 
     const onChangeInput = (e)=>{
         setInput(e.target.value)
@@ -21,12 +19,12 @@ function Conversation({user, auth, socket, className, fetchConversation}) {
     const sendMessage = (e)=>{
         e.preventDefault();
         const message = {
-            to: user._id,
+            to: activeConversation.user._id,
             from: auth.loggedUser._id,
             message: input
         }
 
-        user.messages = [...user.messages, {...message}]
+        activeConversation.messages = [...activeConversation.messages, {...message}]
         socket.emit('message', message)
 
         setInput("");
@@ -40,7 +38,7 @@ function Conversation({user, auth, socket, className, fetchConversation}) {
         <div className={`${conversation} ${className}`}>
             <div className={ messagesContainer }>
                 <ul>
-                    {user.messages.map((message, index)=>{
+                    {activeConversation.messages.map((message, index)=>{
                         return <>
                             <li className={(message.from == auth.loggedUser._id) ? sentByMe : null}>
                                 <p>
