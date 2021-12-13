@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { main, tabsContent } from './MessagePanel.module.scss'
 import Conversation from '../Conversation/Conversation'
 import _ from 'lodash'
@@ -12,7 +13,7 @@ function MessagePanel({socket, auth}) {
     const { openConversations,
             checkAndSetActiveConversation, closeTab,
             updateConversationMessages } = useConversationContext()
-    
+
     console.log(openConversations)
     let activeConversation;
     if(openConversations.size > 0){
@@ -35,8 +36,22 @@ function MessagePanel({socket, auth}) {
         });
     }
 
-    console.log("Active conversation:")
-    console.log(activeConversation)
+    const handleNewMessage = (data)=>{
+        let messages = activeConversation.messages;
+        messages.push(data);
+        updateConversationMessages(activeConversation.user._id, messages);
+    }
+    
+    useEffect(()=>{
+        socket.on("message", (data)=>{
+            console.log("new message");
+            handleNewMessage(data);
+        })
+
+        return () => {
+            socket.off('message');
+        }
+    }, [openConversations, activeConversation])
 
     return (
         <div className={main}>

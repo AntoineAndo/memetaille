@@ -22,20 +22,6 @@ function Home() {
     
     console.log("___Home render")
 
-    const handleNewMessage = (data) => {
-        //Get the user data associated with the sender's _id
-        console.log(userList)
-        let _userList = [...userList];
-        const sender = _.find(_userList, {_id: data.from});
-
-        if(sender.messages == undefined){
-            sender.messages = [];
-        }
-        sender.messages.push({...data});
-        console.log(_userList);
-        setUserList(_userList)
-    }
-
     useEffect(() => {
         socket.auth = {
             user: JSON.stringify(auth.loggedUser)
@@ -46,18 +32,12 @@ function Home() {
             auth.setSocketId(message.ownId)
         });
 
-        socket.on("message", (data)=>{
-            console.log("new message");
-            handleNewMessage(data);
-        })
-
         socket.on("connection_error", err=>{
             console.log("connection error")
         })
 
         return () => {
             socket.off('connect_error');
-            socket.off('message');
             socket.off('connection_confirmed');
         }
     }, []);
