@@ -5,6 +5,13 @@ function Conversation({activeConversation, auth, socket, className, fetchConvers
     const [input, setInput] = useState("")
     const endMessage = useRef(null);
 
+    console.log(activeConversation);
+    if(activeConversation.offline == true){
+        console.log("This user is offline")
+    }else{
+        console.log("this user is online")
+    }
+
     if(activeConversation.messages == undefined)
         activeConversation.messages = []
 
@@ -54,8 +61,8 @@ function Conversation({activeConversation, auth, socket, className, fetchConvers
             </div>
             <div className={ inputContainer }>
                 <form onSubmit={(e)=>sendMessage(e)}>
-                    <input type="text" value={input} onChange={(e)=>onChangeInput(e)}/>
-                    <button type="submit">Send</button>
+                    <input type="text" value={input} onChange={(e)=>onChangeInput(e)} disabled={(activeConversation.offline == true)?true:false}/>
+                    <button type="submit" disabled={(activeConversation.offline == true)?true:false} >Send</button>
                 </form>
             </div>
         </div>
